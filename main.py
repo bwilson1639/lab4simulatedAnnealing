@@ -17,7 +17,6 @@ class Node:
 
         xValue = None
         yValue = None
-        randomNum = random.seed()
         manhattanCost = costCalculate()
 
         for y in range(0,3):
@@ -39,7 +38,7 @@ class Node:
         '''moves the data around based on the possible children then saves it in children list'''
         while len(possibleChildren) > 0:
 
-            possibleChildData = possibleChildren.pop(randomNum.randrange(len(possibleChildren)) -1)
+            possibleChildData = possibleChildren.pop(random.randrange(len(possibleChildren)) - 1)
 
 
             tempHolder = self.data[possibleChildData[1]][possibleChildData[0]]
@@ -48,8 +47,8 @@ class Node:
             childData[possibleChildData[1]][possibleChildData[0]] = '0'
             childData[yValue][xValue] = tempHolder
 
-            if childData != parent.data or parent is None:
-                children.append(Node(childData), manhattanCost.manhattanCalculate(childData))
+            if  parent is None or childData != parent.data:
+                children.append(Node(childData, manhattanCost.manhattanCalculate(childData)))
 
         return children
 
@@ -66,11 +65,10 @@ class simulatedAnneal:
 
         iterate = int(iterateNum)
         inputProblem = self.getInput()
-        t = 0
+        t = 1
         initialCost = costCalculate()
         current = Node(inputProblem, initialCost.manhattanCalculate(inputProblem)) #need to solve cost calculation
         parent = None
-        randomNum = random.seed()
 
 
         for t in range(0,iterate):
@@ -80,22 +78,23 @@ class simulatedAnneal:
             if T <= 0 :
                 return current
 
-            next = current.createChild(parent)
-
+            childlist = current.createChild(parent)
+            next = childlist.pop(random.randrange(0, len(childlist)))
             deltaE = next.cost - current.cost
 
-            deltaEProb = math.exp((-deltaE) / t)
+            deltaEProb = math.exp((-deltaE) /t)
 
-            if deltaE > 0 or randomNum.uniform(0.0, 1.00000) > deltaEProb:
+            if deltaE > 0 or random.uniform(0.0, 1.00000) > deltaEProb:
 
                 print(current.data[0])
                 print(current.data[1])
                 if deltaE >= 0:
-                    line3 = current.data[2] + "(value = " + deltaE + ")"
+                    line3 = str(current.data[2]) + "(value = " + str(deltaE) + ")"
                     print(line3)
                 else:
-                    line3 = current.data[2] + "(value = " + deltaE + ", BAD MODE was chosen)"
+                    line3 = str(current.data[2]) + "(value = " + str(deltaE) + ", BAD MODE was chosen)"
                     print(line3)
+                    print("\n")
                 parent = current
 
                 current = next
