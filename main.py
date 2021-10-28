@@ -8,8 +8,8 @@ class Node:
         '''Initializes the node class and fills the node with required data'''
 
         self.data = data
-        self.cost = cost
         self.goal = [['0', '1', '2'],['3', '4', '5'], ['6', '7', '8']]
+        self.cost = cost
 
     def createChild(self, parent):
         '''creates all child nodes off of current node, returns list of possible nodes'''
@@ -39,23 +39,31 @@ class Node:
         while len(possibleChildren) > 0:
 
             possibleChildData = possibleChildren.pop(randomNum.randrange(len(possibleChildren)) -1)
+
+
             tempHolder = self.data[possibleChildData[1]][possibleChildData[0]]
             childData = deepcopy(self.data)
 
             childData[possibleChildData[1]][possibleChildData[0]] = '0'
             childData[yValue][xValue] = tempHolder
-            children.append(Node(childData, 0))
+
+            if childData != parent.data or parent is None:
+                children.append(Node(childData), self.costCalculate(childData))
 
         return children
 
-    def costCalculate(self, goal):
+    def costCalculate(self, data):
 
         temp = 0
 
         for y in range(0, 3):
             for x in range(0, 3):
-                if self.data[y][x] != goal[y][x] and self.data[y][x] != '0':
+                if data[y][x] != self.goal[y][x] and data[y][x] != '0':
                     temp += 1
+
+        return temp
+
+
 class simulatedAnneal:
 
     def annealAlgorithm(self,  iterate):
