@@ -18,6 +18,7 @@ class Node:
         xValue = None
         yValue = None
         randomNum = random.seed()
+        manhattanCost = costCalculate()
 
         for y in range(0,3):
             for x in range (0,3):
@@ -48,34 +49,31 @@ class Node:
             childData[yValue][xValue] = tempHolder
 
             if childData != parent.data or parent is None:
-                children.append(Node(childData), self.costCalculate(childData))
+                children.append(Node(childData), manhattanCost.manhattanCalculate(childData))
 
         return children
 
-    def costCalculate(self, data):
 
-        temp = 0
-
-        for y in range(0, 3):
-            for x in range(0, 3):
-                if data[y][x] != self.goal[y][x] and data[y][x] != '0':
-                    temp += 1
-
-        return temp
 
 
 class simulatedAnneal:
 
-    def annealAlgorithm(self,  iterate):
+    def __init__(self, iterate):
 
+        self.annealAlgorithm(iterate)
+
+    def annealAlgorithm(self,  iterateNum):
+
+        iterate = int(iterateNum)
         inputProblem = self.getInput()
         t = 0
-        current = Node(inputProblem) #need to solve cost calculation
+        initialCost = costCalculate()
+        current = Node(inputProblem, initialCost.manhattanCalculate(inputProblem)) #need to solve cost calculation
         parent = None
         randomNum = random.seed()
 
 
-        for t in iterate:
+        for t in range(0,iterate):
 
             T = (1-(t+1)/iterate)
 
@@ -90,10 +88,20 @@ class simulatedAnneal:
 
             if deltaE > 0 or randomNum.uniform(0.0, 1.00000) > deltaEProb:
 
+                print(current.data[0])
+                print(current.data[1])
+                if deltaE >= 0:
+                    line3 = current.data[2] + "(value = " + deltaE + ")"
+                    print(line3)
+                else:
+                    line3 = current.data[2] + "(value = " + deltaE + ", BAD MODE was chosen)"
+                    print(line3)
                 parent = current
 
                 current = next
                 t += 1
+
+
 
             else:
 
@@ -115,3 +123,39 @@ class simulatedAnneal:
             inputtedList.append(temp)
 
         return inputtedList #returns as a 2d list of strings
+
+class costCalculate:
+
+    def __init__(self):
+
+
+        self.boardDictionary = {
+                # x,y
+            '1': [1,0],
+            '2': [2,0],
+            '3': [0,1],
+            '4': [1,1],
+            '5': [1,2],
+            '6': [2,0],
+            '7': [2,1],
+            '8': [2,2]}
+
+
+    def manhattanCalculate(self, boardData):
+
+        manhattanCost = 0
+
+        for y in range(0,3):
+            for x in range(0,3):
+
+                if boardData[y][x] == '0':
+                    continue
+                else:
+                    temp = boardData[y][x]
+                    dictionaryValue = self.boardDictionary[temp]
+                    manhattanCost += (abs(y - dictionaryValue[1]) + abs(x - dictionaryValue[0]))
+
+        return manhattanCost
+
+
+start = simulatedAnneal(50)
