@@ -17,6 +17,7 @@ class Node:
 
         xValue = None
         yValue = None
+        randomNum = random.seed()
 
         for y in range(0,3):
             for x in range (0,3):
@@ -35,8 +36,9 @@ class Node:
                 possibleChildren.append(coordinate)
 
         '''moves the data around based on the possible children then saves it in children list'''
-        for childNode in possibleChildren:
-            possibleChildData = possibleChildren.pop(0)
+        while len(possibleChildren) > 0:
+
+            possibleChildData = possibleChildren.pop(randomNum.randrange(len(possibleChildren)) -1)
             tempHolder = self.data[possibleChildData[1]][possibleChildData[0]]
             childData = deepcopy(self.data)
 
@@ -46,17 +48,17 @@ class Node:
 
         return children
 
-    def costCalculate(self, start, goal):
+    def costCalculate(self, goal):
 
         temp = 0
 
         for y in range(0, 3):
             for x in range(0, 3):
-                if start[y][x] != goal[y][x] and start[y][x] != '0':
+                if self.data[y][x] != goal[y][x] and self.data[y][x] != '0':
                     temp += 1
 class simulatedAnneal:
 
-    def annealalgorithm(self,  iterate):
+    def annealAlgorithm(self,  iterate):
 
         inputProblem = self.getInput()
         t = 0
