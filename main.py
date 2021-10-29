@@ -1,3 +1,16 @@
+'''A eight puzzle solver using Simulated Annealing Algorithm by Benjamin Wilson. By using Simulated
+Annealing the program tries to solve an inputted eight Puzzle problem, by either picking a random
+state with a better value than the previous, or randomly selecting a worse solution if there is no
+better state. Uses the algorithm found in Artifical Intelligence, a modern approach.
+
+current known bugs: the current formula for finding the T value has issues with higher than normal iterations.
+this would require some configering and trial and error to find a better formula
+
+improvements: this algorithm would be improved if it was required to select a better state before conisdering a
+worse one, rather than randomly selecting a sucessor'''
+
+
+
 import random
 import math
 import sys
@@ -59,7 +72,7 @@ class Node:
 class simulatedAnneal:
     '''class that stores the simulated Anneal Algorithm. Uses the Node class to store the information, then either
      randomly selects either a better move, where it will then go into that move, or it randomly selects a worse
-     move, in which it will go into it if deltaEProb < a random flode between 0.0 and 1.0'''
+     move, in which it will go into it if deltaEProb < a random float between 0.0 and 1.0'''
     def __init__(self, iterate):
 
         self.annealAlgorithm(iterate)
