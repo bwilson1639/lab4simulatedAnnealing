@@ -1,5 +1,6 @@
 import random
 import math
+import sys
 from copy import deepcopy
 
 class Node:
@@ -56,13 +57,14 @@ class Node:
 
 
 class simulatedAnneal:
-
+    '''class that stores the simulated Anneal Algorithm. Uses the Node class to store the information, then either
+     randomly selects either a better move, where it will then go into that move, or it randomly selects a worse
+     move, in which it will go into it if deltaEProb < a random flode between 0.0 and 1.0'''
     def __init__(self, iterate):
 
         self.annealAlgorithm(iterate)
 
     def annealAlgorithm(self,  iterateNum):
-
         iterate = int(iterateNum)
         inputProblem = self.getInput()
         t = 1
@@ -71,7 +73,7 @@ class simulatedAnneal:
         parent = None
 
 
-        for t in range(0,iterate):
+        for t in range(iterate):
 
             T = (1-(t+1)/iterate)
 
@@ -82,15 +84,16 @@ class simulatedAnneal:
             next = childlist.pop(random.randrange(0, len(childlist)))
             deltaE = next.cost - current.cost
 
-            deltaEProb = math.exp((-deltaE) /t)
+            deltaEProb = math.exp(((-deltaE)/T))
 
-            if deltaE > 0 or random.uniform(0.0, 1.00000) > deltaEProb:
+            if deltaE < 0 or random.uniform(0.0, 1.00000) > deltaEProb:
 
                 print(current.data[0])
                 print(current.data[1])
-                if deltaE >= 0:
+                if deltaE <= 0:
                     line3 = str(current.data[2]) + "(value = " + str(deltaE) + ")"
                     print(line3)
+                    print("\n")
                 else:
                     line3 = str(current.data[2]) + "(value = " + str(deltaE) + ", BAD MODE was chosen)"
                     print(line3)
@@ -124,7 +127,8 @@ class simulatedAnneal:
         return inputtedList #returns as a 2d list of strings
 
 class costCalculate:
-
+    ''''calculates the manhattan distance for any inputted state. uses a dictionary to store the final positions,
+    then checks where the inputted boardData aligns with the dictionary'''
     def __init__(self):
 
 
@@ -141,7 +145,7 @@ class costCalculate:
 
 
     def manhattanCalculate(self, boardData):
-
+        '''the expression that calculates the manhattan distance'''
         manhattanCost = 0
 
         for y in range(0,3):
@@ -157,4 +161,4 @@ class costCalculate:
         return manhattanCost
 
 
-start = simulatedAnneal(50)
+start = simulatedAnneal(200)
